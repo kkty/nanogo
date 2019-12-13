@@ -22,14 +22,14 @@ func atoi(s string) int64 {
 	return int64(i)
 }
 
-func atof(s string) float32 {
+func atof(s string) float64 {
 	f, err := strconv.ParseFloat(s, 32)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return float32(f)
+	return float64(f)
 }
 
 func (l *lexer) Lex(lval *yySymType) int {
@@ -72,10 +72,10 @@ func (l *lexer) Lex(lval *yySymType) int {
 		{"int64", INT64, nil},
 		{"float64", FLOAT64, nil},
 		{"bool", BOOL, nil},
-		{"true", BOOL_VALUE, func(s string) { lval.val = true }},
-		{"false", BOOL_VALUE, func(s string) { lval.val = false }},
-		{"[0-9]+", INT_VALUE, func(s string) { lval.val = atoi(s) }},
-		{"[0-9]+(\\.[0-9]*)?([eE][\\+\\-]?[0-9]+)?", FLOAT_VALUE, func(s string) { lval.val = atof(s) }},
+		{"true", BOOL_VALUE, func(s string) { lval.boolval = true }},
+		{"false", BOOL_VALUE, func(s string) { lval.boolval = false }},
+		{"[0-9]+", INT_VALUE, func(s string) { lval.intval = atoi(s) }},
+		{"[0-9]+(\\.[0-9]*)?([eE][\\+\\-]?[0-9]+)?", FLOAT_VALUE, func(s string) { lval.floatval = atof(s) }},
 		{"-", MINUS, nil},
 		{"\\+", PLUS, nil},
 		{"\\*", ASTERISK, nil},
@@ -92,7 +92,7 @@ func (l *lexer) Lex(lval *yySymType) int {
 		{"return", RETURN, nil},
 		{"var", VAR, nil},
 		{"print", PRINT, nil},
-		{"[a-z][0-9a-zA-Z_]*", IDENTIFIER, func(s string) { lval.val = s }},
+		{"[a-z][0-9a-zA-Z_]*", IDENTIFIER, func(s string) { lval.stringval = s }},
 	}
 
 	longestMatch := struct {

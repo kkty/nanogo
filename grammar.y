@@ -3,7 +3,10 @@ package nanogo
 %}
 
 %union{
-  val interface{}
+  stringval string
+  intval int64
+  floatval float64
+  boolval bool
   declaration *Declaration
   declarations []*Declaration
   typ Type
@@ -26,9 +29,9 @@ package nanogo
 %token<> INT64
 %token<> FLOAT64
 %token<> BOOL
-%token<val> BOOL_VALUE
-%token<val> INT_VALUE
-%token<val> FLOAT_VALUE
+%token<boolval> BOOL_VALUE
+%token<intval> INT_VALUE
+%token<floatval> FLOAT_VALUE
 %token<> FUNC
 %token<> LEFT_BRACE
 %token<> RIGHT_BRACE
@@ -53,7 +56,7 @@ package nanogo
 %token<> VAR
 %token<> FOR
 %token<> PRINT
-%token<val> IDENTIFIER
+%token<stringval> IDENTIFIER
 
 %left EQUAL_EQUAL EXCLAMATION_EQUAL LESS LESS_EQUAL GREATER GREATER_EQUAL
 %left PLUS MINUS
@@ -88,13 +91,13 @@ program:
       typ.Args = append(typ.Args, nameAndType.Type)
     }
     yylex.(*lexer).result.Declarations = append(
-      yylex.(*lexer).result.Declarations, &Declaration{$3.(string), typ})
+      yylex.(*lexer).result.Declarations, &Declaration{$3, typ})
     yylex.(*lexer).result.Assignments = append(
-      yylex.(*lexer).result.Assignments, &Assignment{$3.(string), &Function{typ, args, $10}})
+      yylex.(*lexer).result.Assignments, &Assignment{$3, &Function{typ, args, $10}})
   }
 
 declaration: VAR IDENTIFIER type
-  { $$ = &Declaration{$2.(string), $3} }
+  { $$ = &Declaration{$2, $3} }
 
 type: INT64
   { $$ = &IntType{} }
@@ -113,7 +116,7 @@ types:
   { $$ = append($1, $3) }
 
 name_and_type: IDENTIFIER type
-  { $$ = struct{ Name string; Type Type }{$1.(string), $2} }
+  { $$ = struct{ Name string; Type Type }{$1, $2} }
 
 name_and_types:
   { $$ = []struct{ Name string; Type Type}{} }
@@ -123,9 +126,9 @@ name_and_types:
   { $$ = append($1, $3) }
 
 statement: VAR IDENTIFIER type
-  { $$ = &Declaration{$2.(string), $3} }
+  { $$ = &Declaration{$2, $3} }
 | IDENTIFIER EQUAL expression
-  { $$ = &Assignment{$1.(string), $3} }
+  { $$ = &Assignment{$1, $3} }
 | RETURN expression
   { $$ = &Return{$2} }
 | IF expression block
@@ -137,7 +140,7 @@ statement: VAR IDENTIFIER type
 | block
   { $$ = $1 }
 | IDENTIFIER LEFT_PARENTHESIS expressions RIGHT_PARENTHESIS
-  { $$ = &Application{&Variable{$1.(string)}, $3} }
+  { $$ = &Application{&Variable{$1}, $3} }
 
 statements:
   { $$ = []Statement{} }
@@ -156,17 +159,17 @@ expression: expression PLUS expression
 | expression SLASH expression
   { $$ = &Div{$1, $3} }
 | INT_VALUE
-  { $$ = &Int{$1.(int64)} }
+  { $$ = &Int{$1} }
 | FLOAT_VALUE
-  { $$ = &Float{$1.(float64)} }
+  { $$ = &Float{$1} }
 | BOOL_VALUE
-  { $$ = &Bool{$1.(bool)} }
+  { $$ = &Bool{$1} }
 | IDENTIFIER
-  { $$ = &Variable{$1.(string)} }
+  { $$ = &Variable{$1} }
 | LEFT_PARENTHESIS expression RIGHT_PARENTHESIS
   { $$ = $2 }
 | IDENTIFIER LEFT_PARENTHESIS expressions RIGHT_PARENTHESIS
-  { $$ = &Application{&Variable{$1.(string)}, $3} }
+  { $$ = &Application{&Variable{$1}, $3} }
 | expression EQUAL_EQUAL expression
   { $$ = &Equal{$1, $3} }
 | expression EXCLAMATION_EQUAL expression

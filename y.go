@@ -10,7 +10,10 @@ import __yyfmt__ "fmt"
 //line grammar.y:5
 type yySymType struct {
 	yys           int
-	val           interface{}
+	stringval     string
+	intval        int64
+	floatval      float64
+	boolval       bool
 	declaration   *Declaration
 	declarations  []*Declaration
 	typ           Type
@@ -220,8 +223,8 @@ var yyErrorMessages = [...]struct {
 /*	parser for yacc output	*/
 
 var (
-	yyDebug        = 1
-	yyErrorVerbose = true
+	yyDebug        = 0
+	yyErrorVerbose = false
 )
 
 type yyLexer interface {
@@ -548,19 +551,19 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line grammar.y:79
+//line grammar.y:82
 		{
 			yylex.(*lexer).result = &Program{}
 		}
 	case 2:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:81
+//line grammar.y:84
 		{
 			yylex.(*lexer).result.Declarations = append(yylex.(*lexer).result.Declarations, yyDollar[2].declaration)
 		}
 	case 3:
 		yyDollar = yyS[yypt-10 : yypt+1]
-//line grammar.y:83
+//line grammar.y:86
 		{
 			typ := &FunctionType{Return: yyDollar[8].types}
 			args := []string{}
@@ -569,70 +572,70 @@ yydefault:
 				typ.Args = append(typ.Args, nameAndType.Type)
 			}
 			yylex.(*lexer).result.Declarations = append(
-				yylex.(*lexer).result.Declarations, &Declaration{yyDollar[3].val.(string), typ})
+				yylex.(*lexer).result.Declarations, &Declaration{yyDollar[3].stringval, typ})
 			yylex.(*lexer).result.Assignments = append(
-				yylex.(*lexer).result.Assignments, &Assignment{yyDollar[3].val.(string), &Function{typ, args, yyDollar[10].block}})
+				yylex.(*lexer).result.Assignments, &Assignment{yyDollar[3].stringval, &Function{typ, args, yyDollar[10].block}})
 		}
 	case 4:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:97
+//line grammar.y:100
 		{
-			yyVAL.declaration = &Declaration{yyDollar[2].val.(string), yyDollar[3].typ}
+			yyVAL.declaration = &Declaration{yyDollar[2].stringval, yyDollar[3].typ}
 		}
 	case 5:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:100
+//line grammar.y:103
 		{
 			yyVAL.typ = &IntType{}
 		}
 	case 6:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:102
+//line grammar.y:105
 		{
 			yyVAL.typ = &FloatType{}
 		}
 	case 7:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:104
+//line grammar.y:107
 		{
 			yyVAL.typ = &BoolType{}
 		}
 	case 8:
 		yyDollar = yyS[yypt-7 : yypt+1]
-//line grammar.y:106
+//line grammar.y:109
 		{
 			yyVAL.typ = &FunctionType{yyDollar[3].types, yyDollar[6].types}
 		}
 	case 9:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line grammar.y:109
+//line grammar.y:112
 		{
 			yyVAL.types = []Type{}
 		}
 	case 10:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:111
+//line grammar.y:114
 		{
 			yyVAL.types = []Type{yyDollar[1].typ}
 		}
 	case 11:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:113
+//line grammar.y:116
 		{
 			yyVAL.types = append(yyDollar[1].types, yyDollar[3].typ)
 		}
 	case 12:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:116
+//line grammar.y:119
 		{
 			yyVAL.name_and_type = struct {
 				Name string
 				Type Type
-			}{yyDollar[1].val.(string), yyDollar[2].typ}
+			}{yyDollar[1].stringval, yyDollar[2].typ}
 		}
 	case 13:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line grammar.y:119
+//line grammar.y:122
 		{
 			yyVAL.name_and_types = []struct {
 				Name string
@@ -641,7 +644,7 @@ yydefault:
 		}
 	case 14:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:121
+//line grammar.y:124
 		{
 			yyVAL.name_and_types = []struct {
 				Name string
@@ -650,175 +653,175 @@ yydefault:
 		}
 	case 15:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:123
+//line grammar.y:126
 		{
 			yyVAL.name_and_types = append(yyDollar[1].name_and_types, yyDollar[3].name_and_type)
 		}
 	case 16:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:126
+//line grammar.y:129
 		{
-			yyVAL.statement = &Declaration{yyDollar[2].val.(string), yyDollar[3].typ}
+			yyVAL.statement = &Declaration{yyDollar[2].stringval, yyDollar[3].typ}
 		}
 	case 17:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:128
+//line grammar.y:131
 		{
-			yyVAL.statement = &Assignment{yyDollar[1].val.(string), yyDollar[3].expression}
+			yyVAL.statement = &Assignment{yyDollar[1].stringval, yyDollar[3].expression}
 		}
 	case 18:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:130
+//line grammar.y:133
 		{
 			yyVAL.statement = &Return{yyDollar[2].expression}
 		}
 	case 19:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:132
+//line grammar.y:135
 		{
 			yyVAL.statement = &If{yyDollar[2].expression, yyDollar[3].block}
 		}
 	case 20:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:134
+//line grammar.y:137
 		{
 			yyVAL.statement = &For{yyDollar[2].expression, yyDollar[3].block}
 		}
 	case 21:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line grammar.y:136
+//line grammar.y:139
 		{
 			yyVAL.statement = &Print{yyDollar[3].expression}
 		}
 	case 22:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:138
+//line grammar.y:141
 		{
 			yyVAL.statement = yyDollar[1].block
 		}
 	case 23:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line grammar.y:140
+//line grammar.y:143
 		{
-			yyVAL.statement = &Application{&Variable{yyDollar[1].val.(string)}, yyDollar[3].expressions}
+			yyVAL.statement = &Application{&Variable{yyDollar[1].stringval}, yyDollar[3].expressions}
 		}
 	case 24:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line grammar.y:143
+//line grammar.y:146
 		{
 			yyVAL.statements = []Statement{}
 		}
 	case 25:
 		yyDollar = yyS[yypt-2 : yypt+1]
-//line grammar.y:145
+//line grammar.y:148
 		{
 			yyVAL.statements = append(yyDollar[1].statements, yyDollar[2].statement)
 		}
 	case 26:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:148
+//line grammar.y:151
 		{
 			yyVAL.block = Block(yyDollar[2].statements)
 		}
 	case 27:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:151
+//line grammar.y:154
 		{
 			yyVAL.expression = &Add{yyDollar[1].expression, yyDollar[3].expression}
 		}
 	case 28:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:153
+//line grammar.y:156
 		{
 			yyVAL.expression = &Sub{yyDollar[1].expression, yyDollar[3].expression}
 		}
 	case 29:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:155
+//line grammar.y:158
 		{
 			yyVAL.expression = &Mul{yyDollar[1].expression, yyDollar[3].expression}
 		}
 	case 30:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:157
+//line grammar.y:160
 		{
 			yyVAL.expression = &Div{yyDollar[1].expression, yyDollar[3].expression}
 		}
 	case 31:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:159
+//line grammar.y:162
 		{
-			yyVAL.expression = &Int{yyDollar[1].val.(int64)}
+			yyVAL.expression = &Int{yyDollar[1].intval}
 		}
 	case 32:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:161
+//line grammar.y:164
 		{
-			yyVAL.expression = &Float{yyDollar[1].val.(float64)}
+			yyVAL.expression = &Float{yyDollar[1].floatval}
 		}
 	case 33:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:163
+//line grammar.y:166
 		{
-			yyVAL.expression = &Bool{yyDollar[1].val.(bool)}
+			yyVAL.expression = &Bool{yyDollar[1].boolval}
 		}
 	case 34:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:165
+//line grammar.y:168
 		{
-			yyVAL.expression = &Variable{yyDollar[1].val.(string)}
+			yyVAL.expression = &Variable{yyDollar[1].stringval}
 		}
 	case 35:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:167
+//line grammar.y:170
 		{
 			yyVAL.expression = yyDollar[2].expression
 		}
 	case 36:
 		yyDollar = yyS[yypt-4 : yypt+1]
-//line grammar.y:169
+//line grammar.y:172
 		{
-			yyVAL.expression = &Application{&Variable{yyDollar[1].val.(string)}, yyDollar[3].expressions}
+			yyVAL.expression = &Application{&Variable{yyDollar[1].stringval}, yyDollar[3].expressions}
 		}
 	case 37:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:171
+//line grammar.y:174
 		{
 			yyVAL.expression = &Equal{yyDollar[1].expression, yyDollar[3].expression}
 		}
 	case 38:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:173
+//line grammar.y:176
 		{
 			yyVAL.expression = &Not{&Equal{yyDollar[1].expression, yyDollar[3].expression}}
 		}
 	case 39:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:175
+//line grammar.y:178
 		{
 			yyVAL.expression = &LessThan{yyDollar[1].expression, yyDollar[3].expression}
 		}
 	case 40:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:177
+//line grammar.y:180
 		{
 			yyVAL.expression = &Not{&LessThan{yyDollar[3].expression, yyDollar[1].expression}}
 		}
 	case 41:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:179
+//line grammar.y:182
 		{
 			yyVAL.expression = &LessThan{yyDollar[3].expression, yyDollar[1].expression}
 		}
 	case 42:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:181
+//line grammar.y:184
 		{
 			yyVAL.expression = &Not{&LessThan{yyDollar[1].expression, yyDollar[3].expression}}
 		}
 	case 43:
 		yyDollar = yyS[yypt-8 : yypt+1]
-//line grammar.y:183
+//line grammar.y:186
 		{
 			typ := &FunctionType{Return: yyDollar[6].types}
 			args := []string{}
@@ -831,19 +834,19 @@ yydefault:
 		}
 	case 44:
 		yyDollar = yyS[yypt-0 : yypt+1]
-//line grammar.y:195
+//line grammar.y:198
 		{
 			yyVAL.expressions = []Expression{}
 		}
 	case 45:
 		yyDollar = yyS[yypt-1 : yypt+1]
-//line grammar.y:197
+//line grammar.y:200
 		{
 			yyVAL.expressions = []Expression{yyDollar[1].expression}
 		}
 	case 46:
 		yyDollar = yyS[yypt-3 : yypt+1]
-//line grammar.y:199
+//line grammar.y:202
 		{
 			yyVAL.expressions = append(yyDollar[1].expressions, yyDollar[3].expression)
 		}
