@@ -54,6 +54,8 @@ func (s *Declaration) Run(w io.Writer, environments Environments) interface{} {
 		environments.Add(s.Name, int64(0))
 	case *FloatType:
 		environments.Add(s.Name, float64(0))
+	case *BoolType:
+		environments.Add(s.Name, bool(false))
 	case *FunctionType:
 		environments.Add(s.Name, new(Closure))
 	}
