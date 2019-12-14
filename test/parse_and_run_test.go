@@ -73,6 +73,26 @@ func TestParseAndRun(t *testing.T) {
 			`,
 			"10",
 		},
+		{
+			`
+			func foo() (bool) {
+				return true
+			}
+			func bar() (float64) {
+				return 2.5
+			}
+			func main() () {
+				var i bool
+				var j float64
+				i = foo()
+				if i {
+					j = bar()
+					print(j)
+				}
+			}
+			`,
+			"2.5",
+		},
 	} {
 		t.Run(fmt.Sprintf("Case%d", i), func(t *testing.T) {
 			program := nanogo.Parse(c.program)
