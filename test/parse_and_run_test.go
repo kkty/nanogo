@@ -2,6 +2,7 @@ package test
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/kkty/nanogo"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestParseAndRun(t *testing.T) {
-	for _, c := range []struct {
+	for i, c := range []struct {
 		program  string
 		expected string
 	}{
@@ -30,9 +31,9 @@ func TestParseAndRun(t *testing.T) {
 					i = i + 1
 					increment()
 				}
+
 				print(cnt)
 			}
-
 			func increment() () {
 				cnt = cnt + 1
 			}
@@ -56,10 +57,28 @@ func TestParseAndRun(t *testing.T) {
 			`,
 			"46",
 		},
+		{
+			`
+			func main() () {
+				var cnt int64
+				var f func() ()
+				f = func() () {
+					for cnt < 10 {
+						cnt = cnt + 1
+					}
+				}
+				f()
+				print(cnt)
+			}
+			`,
+			"10",
+		},
 	} {
-		program := nanogo.Parse(c.program)
-		buf := &bytes.Buffer{}
-		program.Run(buf)
-		assert.Equal(t, c.expected, buf.String())
+		t.Run(fmt.Sprintf("Case%d", i), func(t *testing.T) {
+			program := nanogo.Parse(c.program)
+			buf := &bytes.Buffer{}
+			program.Run(buf)
+			assert.Equal(t, c.expected, buf.String())
+		})
 	}
 }
