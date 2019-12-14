@@ -29,7 +29,7 @@ type Application struct {
 type Function struct {
 	Type Type
 	Args []string
-	Body Block
+	Body []Statement
 }
 
 type Closure struct {
