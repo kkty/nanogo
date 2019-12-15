@@ -5,7 +5,7 @@ import (
 )
 
 type Expression interface {
-	// Evaluate returns int64, float64 or *Closure.
+	// Evaluate returns int64, float64, bool or *Closure.
 	Evaluate(io.Writer, Environments) interface{}
 }
 
